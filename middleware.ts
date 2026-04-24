@@ -1,9 +1,9 @@
-import NextAuth from "next-auth"
+import NextAuth, { type NextAuthConfig } from "next-auth"
 import { z } from "zod"
 import Credentials from "next-auth/providers/credentials"
 
 // Nous créons une auth config séparée pour le middleware (Edge runtime)
-export const authConfig = {
+export const authConfig: NextAuthConfig = {
   providers: [
     Credentials({
       name: "credentials",
