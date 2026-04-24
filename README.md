@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ANTIGRAVITY - BTP CONCEPT
 
-## Getting Started
+Application web moderne (Next.js 16) pour une entreprise de BTP en Côte d'Ivoire.
+Inclus :
+- Site vitrine responsive & animé (Framer Motion).
+- Espace Administration hyper-complet (Dashboard, gestion des projets, équipe, messagerie, devis).
 
-First, run the development server:
+## Stack Technique
 
+- **Framework**: Next.js (App Router)
+- **Design System**: shadcn/ui + Tailwind CSS (v4)
+- **Base de données**: PostgreSQL (via Supabase) + Prisma ORM (v5)
+- **Authentification**: NextAuth.js
+- **Uploads**: UploadThing
+- **Validation Formulaires**: Zod + React Hook Form
+
+## Prérequis
+
+- Node.js >= 18.17.0
+- Compte Supabase
+- Compte UploadThing
+
+## Installation Locale
+
+1. Clonez le projet et installez les dépendances :
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Dupliquez et configurez les variables d'environnement :
+```bash
+cp .env.example .env
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Configuration Supabase :
+- Créez un nouveau projet sur Supabase.
+- Allez dans `Project Settings > Database` et copiez `Connection string` (URI).
+- Modifiez `DATABASE_URL` dans votre fichier `.env`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Générer le client Prisma et créer la base de données :
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-## Learn More
+5. Initialiser les données pour le compte Admin :
+```bash
+npx prisma db seed
+```
+*(Le compte par défaut sera : **admin@btpconcept.ci** / mot de passe : **admin123**)*
 
-To learn more about Next.js, take a look at the following resources:
+6. Lancez le serveur de développement :
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Déploiement Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Poussez votre code sur GitHub.
+2. Créez un projet sur Vercel et importez le repository.
+3. Configurez les **Environment Variables** dans l'interface Vercel :
+   - `DATABASE_URL`
+   - `NEXTAUTH_SECRET` (utilisez `openssl rand -base64 32` dans votre terminal pour en générer une)
+   - `NEXTAUTH_URL` (votre domaine Vercel, ex: `https://btp-concept.vercel.app`)
+   - `UPLOADTHING_SECRET` et `UPLOADTHING_APP_ID`
+4. Dans `Build & Development Settings`, modifiez la commande de build :
+   - Build Command : `npm run build`
+   - Si vous voulez automatiser Prisma : `npx prisma generate && npx prisma db push && npm run build`
+5. Cliquez sur **Deploy**.
 
-## Deploy on Vercel
+## Architecture & Contributions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+L'architecture est centralisée autour de `src/app`.
+- Les composants d'UI (shadcn) se trouvent dans `src/components/ui/`.
+- Les vues de l'admin sont protégées et isolées dans `src/app/(admin)`.
+- Les actions backend (mutations de base de données) doivent être effectuées dans les `Server Actions`, idéalement définies dans `src/actions`.

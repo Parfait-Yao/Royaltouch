@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum ProjectCategory {
+  GROS_OEUVRE
+  RENOVATION
+  ARCHITECTURE
+  CONSULTING
+}
+
+enum ProjectStatus {
+  IN_PROGRESS
+  COMPLETED
+  PAUSED
+}
+
+enum QuoteStatus {
+  NEW
+  IN_REVIEW
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id          String         @id @default(cuid())
+  title       String
+  slug        String         @unique
+  description String
+  category    ProjectCategory
+  status      ProjectStatus
+  images      String[]
+  featured    Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  icon        String
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  bio         String
+  imageUrl    String
+  linkedinUrl String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model QuoteRequest {
+  id          String      @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  serviceId   String
+  description String
+  budget      String?
+  status      QuoteStatus @default(NEW)
+  adminNote   String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model SiteSettings {
+  id              String   @id @default(cuid()) // Usually just one record with id = "default"
+  companyName     String
+  tagline         String
+  phone           String
+  email           String
+  address         String
+  aboutText       String
+  heroTitle       String
+  heroSubtitle    String
+  metaDescription String
+  updatedAt       DateTime @updatedAt
+}
