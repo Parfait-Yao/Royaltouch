@@ -31,6 +31,8 @@ export const authConfig: NextAuthConfig = {
       return true
     },
   },
+  secret: process.env.AUTH_SECRET || "fallback_secret_for_build_only",
+  trustHost: true
 }
 
 export const { auth: middleware } = NextAuth(authConfig)

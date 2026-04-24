@@ -57,5 +57,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session
     }
   },
-  session: { strategy: "jwt" }
+  session: { strategy: "jwt" },
+  secret: process.env.AUTH_SECRET || "fallback_secret_for_build_only",
+  trustHost: true
 })
