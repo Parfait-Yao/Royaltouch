@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -25,6 +27,8 @@ const sidebarNavItems = [
 ]
 
 export function AdminSidebar() {
+  const pathname = usePathname()
+
   return (
     <div className="flex h-full w-64 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-300">
       <div className="p-6">
@@ -36,17 +40,19 @@ export function AdminSidebar() {
       <ScrollArea className="flex-1 px-4">
         <nav className="flex flex-col gap-2">
           {sidebarNavItems.map((item, index) => {
-            // Note: In real app, we'd use usePathname inside a Client Component.
-            // For now, this requires becoming a client component or passing active state.
+            const isActive = pathname === item.href
             return (
               <Button
                 key={index}
                 variant="ghost"
-                className="justify-start hover:bg-zinc-900 hover:text-zinc-100"
+                className={cn(
+                  "justify-start hover:bg-zinc-900 hover:text-zinc-100",
+                  isActive ? "bg-zinc-900 text-zinc-100" : "text-zinc-400"
+                )}
                 asChild
               >
                 <Link href={item.href}>
-                  <item.icon className="mr-2 h-5 w-5" />
+                  <item.icon className={cn("mr-2 h-5 w-5", isActive ? "text-primary" : "text-zinc-500")} />
                   {item.title}
                 </Link>
               </Button>
